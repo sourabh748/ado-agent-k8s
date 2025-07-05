@@ -1,3 +1,7 @@
+Architecture - 
+
+![alt text](image.png)
+
 # Custom Azure DevOps Agent Docker Image
 
 This Docker image provides a pre-configured Azure DevOps agent (VSTS agent) based on Ubuntu Jammy (22.0) and mcr.microsoft.com/openjdk/jdk:17-ubuntu, tailored for environments behind a proxy and with retry logic for agent configuration.
