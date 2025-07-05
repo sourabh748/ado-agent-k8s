@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name:  ado-agent-service
+  namespace: vsts-agent
+spec:
+  clusterIP : None 
+  selector:
+    app.k8s.io/cicdagent: ado-dev-agent
+  type: ClusterIP
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ado-agent
+  namespace: vsts-agent
+spec:
+  replicas: 0
+  podManagementPolicy: RollingUpdate
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+  serviceName: ado-agent-service
+  selector:
+    matchLabels:
+        app.k8s.io/cicdagent: ado-dev-agent
+  template:
+    metadata:
+      labels:
+        app.k8s.io/cicdagent: ado-dev-agent
+    spec:
+      terminationGracePeriodSeconds: 120
+      containers:
+        - name: ado-agent-container
+          image: spidocker4/vstsagent:mcr-jdk-20250705
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 2
+            limits:
+              memory: 3Gi
+              cpu: 3
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/bin/sh", "-c", "/opt/vstsagent/shutdown.sh" ]
+          envFrom:
+            - configMapRef:
+                name: ado-agent-config
+          env:
+            - name: AZURE_DEVOPS_ORG_URL
+              valueFrom:
+                secretKeyRef:
+                  name: vsts-auth-secrets
+                  key: AZURE_DEVOPS_ORG_URL
+            - name: AZURE_DEVOPS_PROJECT_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: vsts-auth-secrets
+                  key: AZURE_DEVOPS_PROJECT_NAME
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          volumeMounts:
+            - name: work-volume
+              mountPath: /opt/vstsagent/_work
+            - name: token-path
+              mountPath: /etc/AZURE_DEVOPS_PAT_TOKEN
+              subPath: AZURE_DEVOPS_PAT_TOKEN
+              readOnly: true
+      volumes:
+        - name: work-volume
+          emptyDir: {}
+        - name: token-path
+          secret:
+            secretName: vsts-auth-secrets
+            items:
+              - key: AZURE_DEVOPS_PAT_TOKEN
+                path: AZURE_DEVOPS_PAT_TOKEN

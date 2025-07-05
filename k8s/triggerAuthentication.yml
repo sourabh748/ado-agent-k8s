@@ -1,0 +1,13 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: pipeline-trigger-auth
+  namespace: vsts-agent
+spec:
+  secretTargetRef:
+    - parameter: organizationURL
+      name: vsts-auth-secrets
+      key: AZURE_DEVOPS_ORG_URL
+    - parameter: personalAccessToken
+      name: vsts-auth-secrets
+      key: AZURE_DEVOPS_PAT_TOKEN
