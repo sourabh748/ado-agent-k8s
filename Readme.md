@@ -6,7 +6,9 @@ This Docker image provides a pre-configured Azure DevOps agent (VSTS agent) base
 
 ## 🐳 Image Overview ( this docs provides image with two distinct tags `mcr-jdk-20250705`, `ubuntu-jammy-20250619` )
 
-- **Base Image:** `ubuntu:jammy-20250619`, `mcr.microsoft.com/openjdk/jdk:17-ubuntu`
+- **Base Image:** 
+    1. `ubuntu:jammy-20250619`, [Dockerfile](./Dockerfile)
+    2. `mcr.microsoft.com/openjdk/jdk:17-ubuntu` [Dockerfile](./files/Dockerfile)
 - **Azure DevOps Agent Version:** `4.258.1`
 - **Features:**
   - Supports running behind HTTP/HTTPS proxy
@@ -18,6 +20,7 @@ This Docker image provides a pre-configured Azure DevOps agent (VSTS agent) base
 - **Docker Hub link**
     - Image with java [👉 click ](https://hub.docker.com/repository/docker/spidocker4/vstsagent/tags/mcr-jdk-20250705/sha256-c0cbf29d5085a64e14b7b3b5d739f6e8ab06ecd697973d3c2dc2ac196452deeb)
     - Plain VSTS agent  [👉 click ](https://hub.docker.com/repository/docker/spidocker4/vstsagent/tags/ubuntu-jammy-20250619/sha256-949c8b66f7eecba44ec0f64a18493fdb56ebefd4c4d1b107258232d32804aae5)
+
 
     > k8s Configuration for both image is the same
 ---
